@@ -1,4 +1,5 @@
 import Chapter from './chapterModel.js'
+import { getVersesByChapterId as fetchVersesByChapterId } from '../../services/verseService.js';
 
 export const getChapters = async (req, res) => {
   try {
@@ -52,6 +53,17 @@ export const deleteChapter = async (req, res) => {
     const deletedChapter = await Chapter.findOneAndDelete({ chapter_id: req.params.chapter_id });
     if (!deletedChapter) return res.status(404).json({ message: 'Chapter not found' });
     res.status(200).json({ message: 'Chapter deleted successfully' });
+  }
+  catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getVersesByChapterId = async (req, res) => {
+  const { chapter_id } = req.params;
+  try {
+    const verses = await fetchVersesByChapterId(chapter_id);
+    res.status(200).json(verses);
   }
   catch (error) {
     res.status(500).json({ message: error.message });
