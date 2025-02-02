@@ -3,7 +3,6 @@ import Chapter from './chapterModel.js'
 export const getChapters = async (req, res) => {
   try {
     const chapters = await Chapter.find({});
-    console.log(`chapters: ${chapters}`);
     res.status(200).json(chapters);
   }
   catch (error) {
@@ -15,6 +14,7 @@ export const getChapterById = async (req, res) => {
   try {
     const chapter = await Chapter.findOne({ chapter_id: req.params.chapter_id });
     if (!chapter) return res.status(404).json({ message: 'Chapter not found' });
+    res.status(200).json(chapter);
   }
   catch (error) {
     res.status(500).json({ message: error.message });
