@@ -1,36 +1,15 @@
-const { MongoClient } = require('mongodb');
+import mongoose from 'mongoose';
 
-const url = 'mongodb://localhost:27017/nabaunadhim';
-const client = new MongoClient(url);
-
-let db;
-
-async function dbConnect() {
-    if (!db) {
-        try {
-            await client.connect();
-            console.log("Connected to MongoDB!");
-            db = client.db("nabaunadhim");
-        } catch (error) {
-            console.error("Error connecting to MongoDB:", error);
-            throw error;
-        }
-    }
-    return db;
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  }
+  catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
 }
 
-function isClientConnected() {
-    return client && client.topology && client.topology.isConnected();
-}
+export default connectDB;
 
-async function dbClose() {
-    if (client) {
-        await client.close();
-        if(isClientConnected())
-            console.log( "Error in disconnecting MongoDB connection.");
-        else
-            console.log("MongoDB connection closed.");
-    }
-}
-
-module.exports = { dbConnect, dbClose };
